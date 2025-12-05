@@ -1,9 +1,9 @@
 import { getInitialAuthState } from './page.actions'
-import LoginPageClient from './page.client'
+import SignupPageClient from './page.client'
 
-export default async function LoginPage() {
+export default async function SignupPage() {
   const initialAuthState = await getInitialAuthState()
 
-  return <LoginPageClient initialAuthState={initialAuthState} />
+  return <SignupPageClient initialAuthState={initialAuthState} />
 }
 

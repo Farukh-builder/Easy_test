@@ -4,7 +4,15 @@ interface AuthState {
   isAuthenticated: boolean
 }
 
-interface LoginResult {
+interface CreateAccountData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  password: string
+}
+
+interface CreateAccountResult {
   success: boolean
   message?: string
 }
@@ -13,38 +21,27 @@ interface LoginResult {
 let currentUser: { email: string } | null = null
 
 export async function getInitialAuthState(): Promise<AuthState> {
-  // Simulate checking authentication state
   return {
     isAuthenticated: currentUser !== null,
   }
 }
 
-export async function login(email: string, password: string): Promise<LoginResult> {
-  // Simulate server-side authentication
+export async function createAccount(data: CreateAccountData): Promise<CreateAccountResult> {
+  // Simulate server-side account creation
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Demo credentials (in production, this would check against a database)
-  if (email && password.length >= 6) {
-    currentUser = { email }
+  // Demo validation (in production, this would save to database)
+  if (data.email && data.password.length >= 6 && data.firstName && data.lastName) {
+    currentUser = { email: data.email }
     return {
       success: true,
-      message: 'Login successful',
+      message: 'Account created successfully',
     }
   }
 
   return {
     success: false,
-    message: 'Invalid email or password',
-  }
-}
-
-export async function logout(): Promise<void> {
-  currentUser = null
-}
-
-export async function checkAuth(): Promise<AuthState> {
-  return {
-    isAuthenticated: currentUser !== null,
+    message: 'Please fill in all required fields',
   }
 }
 

@@ -1,19 +1,18 @@
 // ============================================
 // Variables
 // ============================================
-$color-bg: #f5f7fa;
+$color-bg: #0a0a0a;
 $color-white: #ffffff;
-$color-primary: #6366f1;
-$color-primary-hover: #4f46e5;
-$color-secondary: #64748b;
-$color-text: #1e293b;
-$color-text-light: #64748b;
-$color-text-muted: #94a3b8;
-$color-border: #e2e8f0;
+$color-teal: #14b8a6;
+$color-teal-hover: #0d9488;
+$color-sidebar-bg: #1a1a1a;
+$color-input-bg: #2a2a2a;
+$color-input-border: #3a3a3a;
+$color-input-placeholder: #888888;
+$color-text: #ffffff;
+$color-text-muted: #aaaaaa;
 $color-error: #ef4444;
-$color-success: #10b981;
-$color-sidebar-bg: #1e293b;
-$color-sidebar-hover: #334155;
+$color-border: #3a3a3a;
 
 $spacing-xs: 4px;
 $spacing-sm: 8px;
@@ -25,8 +24,9 @@ $spacing-2xl: 48px;
 $radius-sm: 6px;
 $radius-md: 8px;
 $radius-lg: 12px;
+$radius-full: 50%;
 
-$sidebar-width: 260px;
+$sidebar-width: 280px;
 $sidebar-collapsed-width: 80px;
 $sidebar-transition: 0.3s ease;
 
@@ -45,27 +45,34 @@ $breakpoint-sm: 575px;
 }
 
 %card-style {
-  background-color: $color-white;
+  background-color: rgba($color-white, 0.95);
   border-radius: $radius-lg;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 %input-base {
   width: 100%;
-  padding: $spacing-md;
-  border: 1px solid $color-border;
+  padding: $spacing-md $spacing-lg;
+  background-color: $color-input-bg;
+  border: 1px solid $color-input-border;
   border-radius: $radius-md;
+  color: $color-text;
   font-size: 16px;
   transition: border-color 0.2s, box-shadow 0.2s;
 
+  &::placeholder {
+    color: $color-input-placeholder;
+  }
+
   &:focus {
     outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    border-color: $color-teal;
+    box-shadow: 0 0 0 2px rgba($color-teal, 0.2);
   }
 
   &:disabled {
-    background-color: $color-bg;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 }
@@ -77,7 +84,7 @@ $breakpoint-sm: 575px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.2s;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
@@ -121,13 +128,34 @@ $breakpoint-sm: 575px;
 }
 
 // ============================================
-// Component: Login Page
+// Component: Signup Page
 // ============================================
 .container {
   // Depth 1
   display: flex;
   min-height: 100vh;
   background-color: $color-bg;
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   .mobileOverlay {
     // Depth 2
@@ -136,7 +164,7 @@ $breakpoint-sm: 575px;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 90;
     display: none;
 
@@ -152,8 +180,9 @@ $breakpoint-sm: 575px;
     top: 0;
     height: 100vh;
     width: $sidebar-width;
-    background-color: $color-sidebar-bg;
-    color: $color-white;
+    background-color: rgba($color-sidebar-bg, 0.95);
+    backdrop-filter: blur(10px);
+    color: $color-text;
     transition: width $sidebar-transition;
     z-index: 100;
     overflow: hidden;
@@ -163,7 +192,7 @@ $breakpoint-sm: 575px;
     @media (max-width: $breakpoint-md) {
       transform: translateX(-100%);
       width: $sidebar-width;
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
 
       &.mobileOpen {
         transform: translateX(0);
@@ -172,6 +201,10 @@ $breakpoint-sm: 575px;
 
     &.collapsed {
       width: $sidebar-collapsed-width;
+
+      .brandIcon {
+        margin: $spacing-md auto;
+      }
 
       .sidebarTitle {
         opacity: 0;
@@ -187,24 +220,34 @@ $breakpoint-sm: 575px;
     .sidebarHeader {
       // Depth 3
       @extend %flex-center;
-      justify-content: space-between;
+      flex-direction: column;
       padding: $spacing-lg;
-      border-bottom: 1px solid rgba($color-white, 0.1);
-      min-height: 70px;
+      gap: $spacing-md;
+
+      .brandIcon {
+        // Depth 4
+        width: 50px;
+        height: 50px;
+        background-color: $color-teal;
+        border-radius: $radius-full;
+        @extend %flex-center;
+        margin-bottom: $spacing-sm;
+        transition: margin $sidebar-transition;
+      }
 
       .sidebarToggle {
         // Depth 4
         @extend %flex-center;
         background: transparent;
         border: none;
-        color: $color-white;
+        color: $color-text;
         cursor: pointer;
         padding: $spacing-sm;
         border-radius: $radius-sm;
         transition: background-color 0.2s;
 
         &:hover {
-          background-color: $color-sidebar-hover;
+          background-color: rgba($color-white, 0.1);
         }
 
         .hamburger {
@@ -219,21 +262,11 @@ $breakpoint-sm: 575px;
             // Depth 6
             width: 100%;
             height: 2px;
-            background-color: $color-white;
+            background-color: $color-text;
             border-radius: 2px;
             transition: transform 0.3s, opacity 0.3s;
           }
         }
-      }
-
-      .sidebarTitle {
-        // Depth 4
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0;
-        white-space: nowrap;
-        transition: opacity $sidebar-transition, width $sidebar-transition;
-        overflow: hidden;
       }
     }
 
@@ -250,7 +283,7 @@ $breakpoint-sm: 575px;
         @extend %flex-center;
         justify-content: flex-start;
         padding: $spacing-md;
-        color: rgba($color-white, 0.8);
+        color: rgba($color-text, 0.8);
         text-decoration: none;
         border-radius: $radius-md;
         transition: background-color 0.2s, color 0.2s;
@@ -258,8 +291,8 @@ $breakpoint-sm: 575px;
         white-space: nowrap;
 
         &:hover {
-          background-color: $color-sidebar-hover;
-          color: $color-white;
+          background-color: rgba($color-white, 0.1);
+          color: $color-text;
         }
 
         .navIcon {
@@ -296,188 +329,240 @@ $breakpoint-sm: 575px;
     @extend %flex-center;
     padding: $spacing-xl;
     transition: margin-left $sidebar-transition;
+    position: relative;
 
     @media (max-width: $breakpoint-md) {
       margin-left: 0;
       padding: $spacing-lg;
     }
 
-    .loginCard {
+    .mobileMenuButton {
+      // Depth 3
+      position: fixed;
+      top: $spacing-md;
+      left: $spacing-md;
+      z-index: 99;
+      @extend %flex-center;
+      background-color: $color-sidebar-bg;
+      color: $color-text;
+      border: none;
+      padding: $spacing-md;
+      border-radius: $radius-md;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      display: none;
+
+      @media (max-width: $breakpoint-md) {
+        display: flex;
+      }
+
+      .hamburger {
+        // Depth 4
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 24px;
+        height: 18px;
+
+        span {
+          // Depth 5
+          width: 100%;
+          height: 2px;
+          background-color: $color-text;
+          border-radius: 2px;
+        }
+      }
+
+      &:hover {
+        background-color: rgba($color-white, 0.1);
+      }
+    }
+
+    .signupCard {
       // Depth 3
       @extend %card-style;
       width: 100%;
-      max-width: 440px;
+      max-width: 500px;
       padding: $spacing-2xl;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 
       @media (max-width: $breakpoint-sm) {
         padding: $spacing-xl;
       }
 
-      .loginTitle {
+      .signupTitle {
         // Depth 4
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 700;
-        color: $color-text;
-        margin: 0 0 $spacing-sm 0;
+        color: #1a1a1a;
+        margin: 0 0 $spacing-xl 0;
         text-align: center;
 
         @media (max-width: $breakpoint-sm) {
-          font-size: 28px;
+          font-size: 24px;
         }
       }
 
-      .loginSubtitle {
+      .errorMessage {
         // Depth 4
-        font-size: 16px;
-        color: $color-text-light;
-        margin: 0 0 $spacing-xl 0;
-        text-align: center;
+        @extend %flex-center;
+        justify-content: flex-start;
+        gap: $spacing-sm;
+        padding: $spacing-md;
+        background-color: rgba($color-error, 0.1);
+        border: 1px solid rgba($color-error, 0.2);
+        border-radius: $radius-md;
+        color: $color-error;
+        margin-bottom: $spacing-lg;
+
+        .errorIcon {
+          // Depth 5
+          font-size: 20px;
+        }
+
+        p {
+          // Depth 5
+          margin: 0;
+          font-size: 14px;
+        }
       }
 
-      .loginForm {
+      .signupForm {
         // Depth 4
         display: flex;
         flex-direction: column;
-        gap: $spacing-lg;
-
-        .errorMessage {
-          // Depth 5
-          @extend %flex-center;
-          justify-content: flex-start;
-          gap: $spacing-sm;
-          padding: $spacing-md;
-          background-color: rgba($color-error, 0.1);
-          border: 1px solid rgba($color-error, 0.2);
-          border-radius: $radius-md;
-          color: $color-error;
-
-          .errorIcon {
-            // Depth 6
-            font-size: 20px;
-          }
-
-          p {
-            // Depth 6
-            margin: 0;
-            font-size: 14px;
-          }
-        }
+        gap: $spacing-md;
 
         .formGroup {
           // Depth 5
           display: flex;
           flex-direction: column;
-          gap: $spacing-sm;
-
-          .label {
-            // Depth 6
-            font-size: 14px;
-            font-weight: 600;
-            color: $color-text;
-          }
 
           .input {
             // Depth 6
             @extend %input-base;
           }
-        }
 
-        .formOptions {
-          // Depth 5
-          @extend %flex-center;
-          justify-content: space-between;
-          font-size: 14px;
-
-          @media (max-width: $breakpoint-sm) {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: $spacing-sm;
-          }
-
-          .checkboxLabel {
+          .phoneInputWrapper {
             // Depth 6
-            @extend %flex-center;
-            gap: $spacing-sm;
-            cursor: pointer;
-            color: $color-text-light;
+            position: relative;
+            display: flex;
+            align-items: center;
 
-            .checkbox {
+            .input {
               // Depth 7
-              width: 16px;
-              height: 16px;
-              cursor: pointer;
+              padding-right: 40px;
             }
-          }
 
-          .forgotLink {
-            // Depth 6
-            color: $color-primary;
-            text-decoration: none;
-            font-weight: 500;
-
-            &:hover {
-              text-decoration: underline;
+            .phoneDropdown {
+              // Depth 7
+              position: absolute;
+              right: $spacing-md;
+              color: $color-input-placeholder;
+              font-size: 12px;
+              pointer-events: none;
             }
           }
         }
 
-        .loginButton {
+        .createButton {
           // Depth 5
           @extend %button-base;
-          background-color: $color-primary;
+          background-color: $color-teal;
           color: $color-white;
           width: 100%;
+          margin-top: $spacing-sm;
 
           &:hover:not(:disabled) {
-            background-color: $color-primary-hover;
+            background-color: $color-teal-hover;
           }
         }
       }
 
-      .loggedIn {
+      .divider {
         // Depth 4
         @extend %flex-center;
-        flex-direction: column;
-        gap: $spacing-lg;
+        margin: $spacing-xl 0;
+        position: relative;
+        color: #888888;
+        font-size: 14px;
 
-        .successMessage {
+        &::before,
+        &::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background-color: #e0e0e0;
+        }
+
+        span {
+          padding: 0 $spacing-md;
+        }
+      }
+
+      .socialButtons {
+        // Depth 4
+        @extend %flex-center;
+        gap: $spacing-md;
+        margin-bottom: $spacing-xl;
+
+        .socialButton {
           // Depth 5
           @extend %flex-center;
-          gap: $spacing-sm;
-          padding: $spacing-lg;
-          background-color: rgba($color-success, 0.1);
-          border: 1px solid rgba($color-success, 0.2);
+          width: 50px;
+          height: 50px;
+          background-color: $color-input-bg;
+          border: 1px solid $color-border;
           border-radius: $radius-md;
-          color: $color-success;
-          width: 100%;
+          color: $color-text;
+          font-size: 18px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
 
-          .successIcon {
-            // Depth 6
-            font-size: 24px;
-            font-weight: 700;
+          &:hover {
+            background-color: rgba($color-white, 0.1);
+            border-color: $color-teal;
           }
 
-          p {
+          .socialIcon {
             // Depth 6
-            margin: 0;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 20px;
           }
         }
+      }
 
-        .logoutButton {
-          // Depth 5
-          @extend %button-base;
-          background-color: $color-secondary;
-          color: $color-white;
-          width: 100%;
+      .signInLink {
+        // Depth 4
+        text-align: center;
+        color: #666666;
+        font-size: 14px;
+        margin: 0 0 $spacing-lg 0;
 
-          &:hover:not(:disabled) {
-            background-color: darken($color-secondary, 10%);
+        a {
+          color: $color-teal;
+          text-decoration: none;
+          font-weight: 600;
+
+          &:hover {
+            text-decoration: underline;
           }
         }
+      }
+
+      .privacyNotice {
+        // Depth 4
+        text-align: center;
+        color: #888888;
+        font-size: 12px;
+        line-height: 1.5;
+        margin: 0;
       }
     }
   }
 }
+
+
+
+
 

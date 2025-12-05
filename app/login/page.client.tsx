@@ -1,45 +1,53 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { login, checkAuth } from './page.actions'
+import { createAccount } from './page.actions'
 import styles from './page.module.scss'
 
-interface LoginPageClientProps {
+interface SignupPageClientProps {
   initialAuthState: { isAuthenticated: boolean }
 }
 
-export default function LoginPageClient({ initialAuthState }: LoginPageClientProps) {
+export default function SignupPageClient({ initialAuthState }: SignupPageClientProps) {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(initialAuthState.isAuthenticated)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setIsLoading(true)
 
     try {
-      const result = await login(email, password)
+      const result = await createAccount({
+        firstName,
+        lastName,
+        email,
+        phone,
+        password,
+      })
       if (result.success) {
-        setIsAuthenticated(true)
+        // Handle success
+        alert('Account created successfully!')
       } else {
-        setError(result.message || 'Login failed')
+        setError(result.message || 'Account creation failed')
       }
     } catch (err) {
-      setError('An error occurred during login')
+      setError('An error occurred during account creation')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleLogout = async () => {
-    setIsAuthenticated(false)
-    setEmail('')
-    setPassword('')
+  const handleSocialSignIn = (provider: string) => {
+    // Handle social sign-in
+    console.log(`Sign in with ${provider}`)
   }
 
   useEffect(() => {
@@ -73,6 +81,7 @@ export default function LoginPageClient({ initialAuthState }: LoginPageClientPro
       )}
       <aside className={`${styles.sidebar} ${isSidebarCollapsed ? styles.collapsed : ''} ${isMobileMenuOpen ? styles.mobileOpen : ''}`}>
         <div className={styles.sidebarHeader}>
+          <div className={styles.brandIcon}></div>
           <button className={styles.sidebarToggle} onClick={toggleSidebar} aria-label="Toggle sidebar">
             <span className={styles.hamburger}>
               <span></span>
@@ -80,24 +89,27 @@ export default function LoginPageClient({ initialAuthState }: LoginPageClientPro
               <span></span>
             </span>
           </button>
-          {!isSidebarCollapsed && <h2 className={styles.sidebarTitle}>Navigation</h2>}
         </div>
         <nav className={styles.sidebarNav}>
-          <a href="/" className={styles.navItem} onClick={closeMobileMenu}>
-            <span className={styles.navIcon}>🏠</span>
-            {!isSidebarCollapsed && <span className={styles.navText}>Home</span>}
+          <a href="#" className={styles.navItem} onClick={closeMobileMenu}>
+            <span className={styles.navIcon}>💬</span>
+            {!isSidebarCollapsed && <span className={styles.navText}>New Chat</span>}
           </a>
-          <a href="/dashboard" className={styles.navItem} onClick={closeMobileMenu}>
-            <span className={styles.navIcon}>📊</span>
-            {!isSidebarCollapsed && <span className={styles.navText}>Dashboard</span>}
+          <a href="#" className={styles.navItem} onClick={closeMobileMenu}>
+            <span className={styles.navIcon}>📄</span>
+            {!isSidebarCollapsed && <span className={styles.navText}>Translate Text</span>}
           </a>
-          <a href="/projects" className={styles.navItem} onClick={closeMobileMenu}>
+          <a href="#" className={styles.navItem} onClick={closeMobileMenu}>
+            <span className={styles.navIcon}>🎥</span>
+            {!isSidebarCollapsed && <span className={styles.navText}>Translate Video</span>}
+          </a>
+          <a href="#" className={styles.navItem} onClick={closeMobileMenu}>
             <span className={styles.navIcon}>📁</span>
-            {!isSidebarCollapsed && <span className={styles.navText}>Projects</span>}
+            {!isSidebarCollapsed && <span className={styles.navText}>Files</span>}
           </a>
-          <a href="/settings" className={styles.navItem} onClick={closeMobileMenu}>
-            <span className={styles.navIcon}>⚙️</span>
-            {!isSidebarCollapsed && <span className={styles.navText}>Settings</span>}
+          <a href="#" className={styles.navItem} onClick={closeMobileMenu}>
+            <span className={styles.navIcon}>🕐</span>
+            {!isSidebarCollapsed && <span className={styles.navText}>History</span>}
           </a>
         </nav>
       </aside>
@@ -115,80 +127,129 @@ export default function LoginPageClient({ initialAuthState }: LoginPageClientPro
           </span>
         </button>
 
-        <div className={styles.loginCard}>
-          <h1 className={styles.loginTitle}>Welcome Back</h1>
-          <p className={styles.loginSubtitle}>Sign in to your account</p>
+        <div className={styles.signupCard}>
+          <h1 className={styles.signupTitle}>Create Aurorah Account</h1>
 
-          {isAuthenticated ? (
-            <div className={styles.loggedIn}>
-              <div className={styles.successMessage}>
-                <span className={styles.successIcon}>✓</span>
-                <p>You are logged in successfully!</p>
-              </div>
-              <button className={styles.logoutButton} onClick={handleLogout}>
-                Log Out
-              </button>
+          {error && (
+            <div className={styles.errorMessage}>
+              <span className={styles.errorIcon}>⚠</span>
+              <p>{error}</p>
             </div>
-          ) : (
-            <form className={styles.loginForm} onSubmit={handleLogin}>
-              {error && (
-                <div className={styles.errorMessage}>
-                  <span className={styles.errorIcon}>⚠</span>
-                  <p>{error}</p>
-                </div>
-              )}
-
-              <div className={styles.formGroup}>
-                <label htmlFor="email" className={styles.label}>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className={styles.input}
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="password" className={styles.label}>
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className={styles.input}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className={styles.formOptions}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" className={styles.checkbox} />
-                  <span>Remember me</span>
-                </label>
-                <a href="/forgot-password" className={styles.forgotLink}>
-                  Forgot password?
-                </a>
-              </div>
-
-              <button
-                type="submit"
-                className={styles.loginButton}
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </button>
-            </form>
           )}
+
+          <form className={styles.signupForm} onSubmit={handleSubmit}>
+            <div className={styles.formGroup}>
+              <input
+                type="text"
+                id="firstName"
+                className={styles.input}
+                placeholder="First name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <input
+                type="text"
+                id="lastName"
+                className={styles.input}
+                placeholder="Last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <input
+                type="email"
+                id="email"
+                className={styles.input}
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <div className={styles.phoneInputWrapper}>
+                <input
+                  type="tel"
+                  id="phone"
+                  className={styles.input}
+                  placeholder="Phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                <span className={styles.phoneDropdown}>▼</span>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <input
+                type="password"
+                id="password"
+                className={styles.input}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={styles.createButton}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creating Account...' : 'Create an Account'}
+            </button>
+          </form>
+
+          <div className={styles.divider}>
+            <span>or sign in with</span>
+          </div>
+
+          <div className={styles.socialButtons}>
+            <button
+              type="button"
+              className={styles.socialButton}
+              onClick={() => handleSocialSignIn('google')}
+            >
+              <span className={styles.socialIcon}>G</span>
+            </button>
+            <button
+              type="button"
+              className={styles.socialButton}
+              onClick={() => handleSocialSignIn('facebook')}
+            >
+              <span className={styles.socialIcon}>f</span>
+            </button>
+            <button
+              type="button"
+              className={styles.socialButton}
+              onClick={() => handleSocialSignIn('apple')}
+            >
+              <span className={styles.socialIcon}>🍎</span>
+            </button>
+          </div>
+
+          <p className={styles.signInLink}>
+            Already have an account? <a href="/signin">Sign In</a>
+          </p>
+
+          <p className={styles.privacyNotice}>
+            By creating an account, you agree to our user agreement and acknowledge our privacy notice.
+          </p>
         </div>
       </main>
     </div>
