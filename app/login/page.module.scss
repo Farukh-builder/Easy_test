@@ -1,0 +1,483 @@
+// ============================================
+// Variables
+// ============================================
+$color-bg: #f5f7fa;
+$color-white: #ffffff;
+$color-primary: #6366f1;
+$color-primary-hover: #4f46e5;
+$color-secondary: #64748b;
+$color-text: #1e293b;
+$color-text-light: #64748b;
+$color-text-muted: #94a3b8;
+$color-border: #e2e8f0;
+$color-error: #ef4444;
+$color-success: #10b981;
+$color-sidebar-bg: #1e293b;
+$color-sidebar-hover: #334155;
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+
+$sidebar-width: 260px;
+$sidebar-collapsed-width: 80px;
+$sidebar-transition: 0.3s ease;
+
+// Breakpoints
+$breakpoint-lg: 991px;
+$breakpoint-md: 767px;
+$breakpoint-sm: 575px;
+
+// ============================================
+// Placeholder Selectors (for @extend)
+// ============================================
+%flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+%card-style {
+  background-color: $color-white;
+  border-radius: $radius-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+%input-base {
+  width: 100%;
+  padding: $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+
+  &:disabled {
+    background-color: $color-bg;
+    cursor: not-allowed;
+  }
+}
+
+%button-base {
+  padding: $spacing-md $spacing-lg;
+  border: none;
+  border-radius: $radius-md;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================
+// Utility Classes (for @extend)
+// ============================================
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
+
+// ============================================
+// Component: Login Page
+// ============================================
+.container {
+  // Depth 1
+  display: flex;
+  min-height: 100vh;
+  background-color: $color-bg;
+
+  .mobileOverlay {
+    // Depth 2
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+    display: none;
+
+    @media (max-width: $breakpoint-md) {
+      display: block;
+    }
+  }
+
+  .sidebar {
+    // Depth 2
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: $sidebar-width;
+    background-color: $color-sidebar-bg;
+    color: $color-white;
+    transition: width $sidebar-transition;
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: $breakpoint-md) {
+      transform: translateX(-100%);
+      width: $sidebar-width;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+
+      &.mobileOpen {
+        transform: translateX(0);
+      }
+    }
+
+    &.collapsed {
+      width: $sidebar-collapsed-width;
+
+      .sidebarTitle {
+        opacity: 0;
+        width: 0;
+      }
+
+      .navText {
+        opacity: 0;
+        width: 0;
+      }
+    }
+
+    .sidebarHeader {
+      // Depth 3
+      @extend %flex-center;
+      justify-content: space-between;
+      padding: $spacing-lg;
+      border-bottom: 1px solid rgba($color-white, 0.1);
+      min-height: 70px;
+
+      .sidebarToggle {
+        // Depth 4
+        @extend %flex-center;
+        background: transparent;
+        border: none;
+        color: $color-white;
+        cursor: pointer;
+        padding: $spacing-sm;
+        border-radius: $radius-sm;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: $color-sidebar-hover;
+        }
+
+        .hamburger {
+          // Depth 5
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          width: 24px;
+          height: 18px;
+
+          span {
+            // Depth 6
+            width: 100%;
+            height: 2px;
+            background-color: $color-white;
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+          }
+        }
+      }
+
+      .sidebarTitle {
+        // Depth 4
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        white-space: nowrap;
+        transition: opacity $sidebar-transition, width $sidebar-transition;
+        overflow: hidden;
+      }
+    }
+
+    .sidebarNav {
+      // Depth 3
+      flex: 1;
+      padding: $spacing-md;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+
+      .navItem {
+        // Depth 4
+        @extend %flex-center;
+        justify-content: flex-start;
+        padding: $spacing-md;
+        color: rgba($color-white, 0.8);
+        text-decoration: none;
+        border-radius: $radius-md;
+        transition: background-color 0.2s, color 0.2s;
+        gap: $spacing-md;
+        white-space: nowrap;
+
+        &:hover {
+          background-color: $color-sidebar-hover;
+          color: $color-white;
+        }
+
+        .navIcon {
+          // Depth 5
+          font-size: 20px;
+          flex-shrink: 0;
+          width: 24px;
+          text-align: center;
+        }
+
+        .navText {
+          // Depth 5
+          font-size: 16px;
+          font-weight: 500;
+          transition: opacity $sidebar-transition, width $sidebar-transition;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  &.sidebarCollapsed .main {
+    margin-left: $sidebar-collapsed-width;
+
+    @media (max-width: $breakpoint-md) {
+      margin-left: 0;
+    }
+  }
+
+  .main {
+    // Depth 2
+    flex: 1;
+    margin-left: $sidebar-width;
+    @extend %flex-center;
+    padding: $spacing-xl;
+    transition: margin-left $sidebar-transition;
+
+    @media (max-width: $breakpoint-md) {
+      margin-left: 0;
+      padding: $spacing-lg;
+    }
+
+    .loginCard {
+      // Depth 3
+      @extend %card-style;
+      width: 100%;
+      max-width: 440px;
+      padding: $spacing-2xl;
+
+      @media (max-width: $breakpoint-sm) {
+        padding: $spacing-xl;
+      }
+
+      .loginTitle {
+        // Depth 4
+        font-size: 32px;
+        font-weight: 700;
+        color: $color-text;
+        margin: 0 0 $spacing-sm 0;
+        text-align: center;
+
+        @media (max-width: $breakpoint-sm) {
+          font-size: 28px;
+        }
+      }
+
+      .loginSubtitle {
+        // Depth 4
+        font-size: 16px;
+        color: $color-text-light;
+        margin: 0 0 $spacing-xl 0;
+        text-align: center;
+      }
+
+      .loginForm {
+        // Depth 4
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-lg;
+
+        .errorMessage {
+          // Depth 5
+          @extend %flex-center;
+          justify-content: flex-start;
+          gap: $spacing-sm;
+          padding: $spacing-md;
+          background-color: rgba($color-error, 0.1);
+          border: 1px solid rgba($color-error, 0.2);
+          border-radius: $radius-md;
+          color: $color-error;
+
+          .errorIcon {
+            // Depth 6
+            font-size: 20px;
+          }
+
+          p {
+            // Depth 6
+            margin: 0;
+            font-size: 14px;
+          }
+        }
+
+        .formGroup {
+          // Depth 5
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-sm;
+
+          .label {
+            // Depth 6
+            font-size: 14px;
+            font-weight: 600;
+            color: $color-text;
+          }
+
+          .input {
+            // Depth 6
+            @extend %input-base;
+          }
+        }
+
+        .formOptions {
+          // Depth 5
+          @extend %flex-center;
+          justify-content: space-between;
+          font-size: 14px;
+
+          @media (max-width: $breakpoint-sm) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: $spacing-sm;
+          }
+
+          .checkboxLabel {
+            // Depth 6
+            @extend %flex-center;
+            gap: $spacing-sm;
+            cursor: pointer;
+            color: $color-text-light;
+
+            .checkbox {
+              // Depth 7
+              width: 16px;
+              height: 16px;
+              cursor: pointer;
+            }
+          }
+
+          .forgotLink {
+            // Depth 6
+            color: $color-primary;
+            text-decoration: none;
+            font-weight: 500;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+
+        .loginButton {
+          // Depth 5
+          @extend %button-base;
+          background-color: $color-primary;
+          color: $color-white;
+          width: 100%;
+
+          &:hover:not(:disabled) {
+            background-color: $color-primary-hover;
+          }
+        }
+      }
+
+      .loggedIn {
+        // Depth 4
+        @extend %flex-center;
+        flex-direction: column;
+        gap: $spacing-lg;
+
+        .successMessage {
+          // Depth 5
+          @extend %flex-center;
+          gap: $spacing-sm;
+          padding: $spacing-lg;
+          background-color: rgba($color-success, 0.1);
+          border: 1px solid rgba($color-success, 0.2);
+          border-radius: $radius-md;
+          color: $color-success;
+          width: 100%;
+
+          .successIcon {
+            // Depth 6
+            font-size: 24px;
+            font-weight: 700;
+          }
+
+          p {
+            // Depth 6
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+          }
+        }
+
+        .logoutButton {
+          // Depth 5
+          @extend %button-base;
+          background-color: $color-secondary;
+          color: $color-white;
+          width: 100%;
+
+          &:hover:not(:disabled) {
+            background-color: darken($color-secondary, 10%);
+          }
+        }
+      }
+    }
+  }
+}
+

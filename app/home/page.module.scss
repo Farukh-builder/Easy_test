@@ -1,0 +1,260 @@
+// ============================================
+// Variables
+// ============================================
+$color-bg: #1a1a2e;
+$color-card: #16213e;
+$color-primary: #e94560;
+$color-secondary: #0f3460;
+$color-text: #eaeaea;
+$color-text-muted: #a0a0a0;
+
+$font-size-count: 72px;
+$font-size-count-tablet: 56px;
+$font-size-count-mobile: 40px;
+
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 48px;
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 24px;
+
+// Breakpoints
+$breakpoint-lg: 991px; // large size
+$breakpoint-md: 767px; // medium size
+$breakpoint-sm: 575px; // small size
+
+// ============================================
+// Placeholder Selectors (for @extend)
+// ============================================
+%flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+%button-base {
+  padding: $spacing-md $spacing-lg;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+%card-style {
+  background-color: $color-card;
+  border-radius: $radius-lg;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+// ============================================
+// Utility Classes (for @extend)
+// ============================================
+// Display
+.d-flex {
+  display: flex;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.d-none {
+  display: none;
+}
+
+// Flex Direction
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+// Justify Content
+.justify-content-start {
+  justify-content: flex-start;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.justify-content-around {
+  justify-content: space-around;
+}
+
+// Align Items
+.align-items-start {
+  align-items: flex-start;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.align-items-end {
+  align-items: flex-end;
+}
+
+.align-items-stretch {
+  align-items: stretch;
+}
+
+// Text Align
+.text-start {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-end {
+  text-align: right;
+}
+
+// ============================================
+// Component: Counter POC
+// ============================================
+// HTML Structure:
+// .container (Depth 1)
+//   .card (Depth 2)
+//     .title (Depth 3)
+//     .count (Depth 3)
+//     .buttons (Depth 3)
+//       .btnDecrement (Depth 4)
+//       .btnReset (Depth 4)
+//       .btnIncrement (Depth 4)
+//     .footer (Depth 3)
+
+.container {
+  // Depth 1
+  @extend %flex-center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-bg 0%, darken($color-bg, 5%) 100%);
+  padding: $spacing-xl;
+
+  .card {
+    // Depth 2
+    @extend %card-style;
+    @extend %flex-center;
+    flex-direction: column;
+    padding: $spacing-xl;
+    gap: $spacing-lg;
+    min-width: 320px;
+
+    @media (max-width: $breakpoint-sm) {
+      min-width: 280px;
+      padding: $spacing-lg;
+    }
+
+    .title {
+      // Depth 3
+      color: $color-text;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      text-align: center;
+
+      @media (max-width: $breakpoint-sm) {
+        font-size: 22px;
+      }
+    }
+
+    .count {
+      // Depth 3
+      color: $color-primary;
+      font-size: $font-size-count;
+      font-weight: 800;
+      margin: $spacing-md 0;
+      font-family: monospace;
+      text-shadow: 0 0 20px rgba($color-primary, 0.5);
+
+      @media (max-width: $breakpoint-md) {
+        font-size: $font-size-count-tablet;
+      }
+
+      @media (max-width: $breakpoint-sm) {
+        font-size: $font-size-count-mobile;
+      }
+    }
+
+    .buttons {
+      // Depth 3
+      @extend %flex-center;
+      gap: $spacing-md;
+      flex-wrap: wrap;
+
+      @media (max-width: $breakpoint-sm) {
+        gap: $spacing-sm;
+      }
+
+      .btnDecrement {
+        // Depth 4
+        @extend %button-base;
+        background-color: $color-secondary;
+        color: $color-text;
+        min-width: 80px;
+      }
+
+      .btnReset {
+        // Depth 4
+        @extend %button-base;
+        background-color: transparent;
+        color: $color-text-muted;
+        border: 2px solid $color-text-muted;
+
+        &:hover {
+          background-color: rgba($color-text-muted, 0.1);
+          color: $color-text;
+          border-color: $color-text;
+        }
+      }
+
+      .btnIncrement {
+        // Depth 4
+        @extend %button-base;
+        background-color: $color-primary;
+        color: $color-text;
+        min-width: 80px;
+      }
+    }
+
+    .footer {
+      // Depth 3
+      color: $color-text-muted;
+      font-size: 14px;
+      margin-top: $spacing-lg;
+      text-align: center;
+    }
+  }
+}
+
